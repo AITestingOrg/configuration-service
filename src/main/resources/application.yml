@@ -9,8 +9,7 @@ spring:
         encrypt.enabled: false
         git:
           uri: https://github.com/AITestingOrg/microservice--config-repo/
-          searchPaths: license-service,edge-service,user-service
-          basedir: 
+          searchPaths: edge-service,user-service
 
 #Setting logging levels
 logging:
