@@ -1,0 +1,26 @@
+
+spring.database.driverClassName: "org.postgresql.Driver"
+
+spring:
+  datasource:
+    platform:  "postgres"
+    url: "jdbc:postgresql://postgres:5432/eagle_eye_prod"
+    username: "postgres_prod"
+    password: "p0stgr@s_prod"
+    testWhileIdle: "true"
+    validationQuery: "SELECT 1"
+    
+spring:
+  jpa:
+    database: "POSTGRESQL"
+    show-sql: "true"
+    properties.hibernate.dialect: "org.hibernate.dialect.PostgreSQLDialect"
+
+eureka:
+  instance:
+    preferIpAddress: true
+  client:
+    registerWithEureka: true
+    fetchRegistry: true
+    serviceUrl:
+      defaultZone: http://discovery-service:8761/eureka/
