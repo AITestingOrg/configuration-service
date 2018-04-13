@@ -1,0 +1,122 @@
+version: '3.4'
+
+services:
+            
+  configuration-service1:
+    build: ./
+    container_name: configuration-service1
+    # volumes:
+      # - config-repo:/root/config-repo:rw
+    ports:
+      - '8888:8888'
+            
+  # license-service:
+    # build: microservice--license-service/
+    # container_name: license-service
+    # ports:
+      # - '8080:8080'
+
+  # discovery-service:
+    # image: aista/discovery-service
+    # container_name: discovery-service
+    # ports:
+      # - '8761:8761'
+    # environment:
+      # - 'eviction-interval-timer-in-ms: 1000'
+
+  # hystrix-dashboard:
+    # build: microservice--hystrix-dashboard/
+    # container_name: hystrix-dashboard
+    # ports:
+      # - '7979:7979'
+
+  # mysql-server:
+    # image: mysql:5.7
+    # container_name: mysql-server
+    # volumes:
+      # - mysql-data:/var/lib/mysql:rw
+    # restart: always
+    # ports:
+      # - '3306:3306'
+    # environment:
+      # MYSQL_USER:
+      # MYSQL_PASSWORD:
+      # MYSQL_ROOT_PASSWORD: 'root'
+      # MYSQL_ALLOW_EMPTY_PASSWORD: 'yes'
+      # MYSQL_DATABASE: user_service
+      
+  # mongodb:
+    # image: 'mongo:latest'
+    # container_name: 'mongodb'
+    # environment:
+      # - MONGO_DATA_DIR=/data/db
+      # - MONGO_LOG_DIR=/dev/null
+    # volumes:
+      # - mongo-data:/data/db:rw
+    # ports:
+      # - '27017:27017'
+    # command: 'mongod --smallfiles --logpath=/dev/null --quiet'
+            
+  # user-service:
+    # build: microservice--user-service/
+    # container_name: user-service
+    # depends_on:
+      # - discovery-service
+      # - mysql-server
+    # ports:
+      # - '8091:8091'
+      
+  # edge-service:
+    # build: edge-service/
+    # depends_on:
+      # - discovery-service
+    # container_name: edge-service
+    # ports:
+      # - '5555:8080'
+      
+  # mongo:
+    # image: 'mongo:3.4.1'
+    # ports:
+      # - '27017:27017'
+    # volumes:
+      # - 'mongo:/data/db'
+  # rabbitmq:
+    # image: rabbitmq:management
+    # ports:
+      # - "5672:5672"
+      # - "15672:15672"
+      
+  # trip-management-query:
+    # build: trip-management-query/
+    # container_name: 'trip-management-query'
+    # environment:
+      # - RABBIT_HOST=rabbitmq
+      # - MONGO_HOST=mongo
+    # ports:
+      # - "8080"
+    # depends_on:
+      # - rabbitmq
+      # - mongo
+      # - discovery-service
+      
+  # trip-management-cmd:
+    # build: trip-management-cmd/
+    # container_name: 'trip-management-cmd'
+    # environment:
+      # - RABBIT_HOST=rabbitmq
+      # - MONGO_HOST=mongo
+    # ports:
+      # - '8080'
+    # depends_on:
+      # - rabbitmq
+      # - mongo
+      # - trip-management-query
+      # - discovery-service
+
+# volumes:
+  # mysql-data:
+  # mongo-data:
+  # mongo:
+  # config-repo:
+
+
