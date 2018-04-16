@@ -9,10 +9,26 @@ The configuration files should be stored with the next structure:
 The {application} should match spring.application.name
 The {profile} should match sping.profiles.actives
 
-In the gradle.build file the next dependency should be present:
+In the gradle.build file the changes must be present:
 
 ```java
-compile('org.springframework.cloud:spring-cloud-starter-config')
+
+ext {
+    springCloudVersion = 'Edgware.SR2'
+}
+
+dependencies {
+...
+  compile('org.springframework.cloud:spring-cloud-starter-config')
+...
+}
+
+dependencyManagement {
+	imports {
+		mavenBom "org.springframework.cloud:spring-cloud-dependencies:${springCloudVersion}"
+	}
+}
+
 ```
 
 It also needs to be configured in the bootstrap.yml, as instructed below:
