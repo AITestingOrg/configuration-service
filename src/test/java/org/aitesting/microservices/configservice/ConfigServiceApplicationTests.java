@@ -70,6 +70,14 @@ public class ConfigServiceApplicationTests {
     }
 
     @Test
+    public void retrieveConfigFileTripCmd_S001() {
+        Map res = new TestRestTemplate().getForObject("http://localhost:" + port + "/trip-mangement-cmd/dev", Map.class);
+        assertThat(res).containsKey("propertySources");
+        String property = (String) res.get("name");
+        assertThat(property).contains("trip-management-cmd");
+    }
+
+    @Test
     public void launchService_R001() {
         try {
             new SpringApplicationBuilder().sources(ConfigServiceApplication.class).run("--server.port=0",
