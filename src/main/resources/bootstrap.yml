@@ -1,4 +1,6 @@
 spring:
   application:
-    name: config-service
+    name: configurationservice
+  profiles:
+    active: dev
 

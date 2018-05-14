@@ -4,81 +4,70 @@ import static org.assertj.core.api.Java6Assertions.assertThat;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
+import java.io.IOException;
+import java.util.Map;
+
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.builder.SpringApplicationBuilder;
-import org.springframework.boot.context.embedded.LocalServerPort;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
-import org.springframework.cloud.config.server.test.ConfigServerTestUtils;
 import org.springframework.context.ConfigurableApplicationContext;
-import org.springframework.http.ResponseEntity;
-//import org.springframework.boot.actuate.autoconfigure.endpoint.web.WebEndpointProperties;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.util.SocketUtils;
 
-import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT;
-
-import java.io.IOException;
-import java.util.Map;
-
 @RunWith(SpringRunner.class)
-@SpringBootTest(classes = ConfigServiceApplication.class, properties = { "spring.cloud.config.enabled:true",
-        "management.security.enabled=false",
-        "management.endpoints.web.exposure.include=*" }, webEnvironment = RANDOM_PORT)
+@SpringBootTest(classes = ConfigServiceApplication.class)
+@ActiveProfiles("test")
 public class ConfigServiceApplicationTests {
 
+    protected static final Logger LOG = LoggerFactory.getLogger(ConfigServiceApplication.class);
     private static int configPort = SocketUtils.findAvailableTcpPort();
-
-    @LocalServerPort
-    private int port;
-
     private static ConfigurableApplicationContext server;
+    private static final String baseURI = "http://localhost:" + configPort;
 
-    //TODO: Test with local repository
+    // TODO: Test with local repository
     @BeforeClass
-    public static void startConfigServer() throws IOException {
-        String baseDir = ConfigServerTestUtils.getBaseDirectory("/");
-        String repo = "https://github.com/AITestingOrg/configuration-repository/";
+    public static void tearUp() throws IOException {
+        final String repo = "https://github.com/AITestingOrg/configuration-repository/";
         server = SpringApplication.run(org.springframework.cloud.config.server.ConfigServerApplication.class,
-                "--server.port=" + configPort, "--spring.config.name=config-service",
+                "--server.port=" + configPort, "--spring.config.name=configurationservice",
                 "--spring.cloud.config.server.git.uri=" + repo);
         System.setProperty("config.port", "" + configPort);
     }
 
     @AfterClass
-    public static void close() {
+    public static void tearDown() {
         System.clearProperty("config.port");
         if (server != null) {
             server.close();
         }
     }
-
+    
     @Test
-    public void contextLoads() {
-    }
-
-    @Test
-    public void retrieveConfigFileUserService_S001() {
-        Map res = new TestRestTemplate().getForObject("http://localhost:" + port + "/user-service/dev", Map.class);
+    public void retrieveConfigFileUserServiceSuccess() {
+        Map res = new TestRestTemplate().getForObject(baseURI + "/userservice/dev", Map.class);
         assertThat(res).containsKey("propertySources");
         String property = (String) res.get("name");
-        assertThat(property).contains("user-service");
+        assertThat(property).contains("userservice");
     }
 
     @Test
-    public void retrieveConfigFileTripCmd_S001() {
-        Map res = new TestRestTemplate().getForObject("http://localhost:" + port + "/trip-mangement-cmd/dev", Map.class);
+    public void retrieveConfigFileTripCmdSuccess() {
+        Map res = new TestRestTemplate().getForObject(baseURI + "/tripmanagementcmd/dev", Map.class);
         assertThat(res).containsKey("propertySources");
         String property = (String) res.get("name");
-        assertThat(property).contains("trip-management-cmd");
+        assertThat(property).contains("tripmanagementcmd");
     }
 
     @Test
-    public void launchService_R001() {
+    public void launchServiceFail() {
         try {
             new SpringApplicationBuilder().sources(ConfigServiceApplication.class).run("--server.port=0",
                     "--spring.cloud.config.enabled=true", "--spring.cloud.config.fail-fast=true",
@@ -87,12 +76,6 @@ public class ConfigServiceApplicationTests {
         } catch (Exception e) {
             assertTrue("Exception not caused by fail fast", e.getMessage().contains("fail fast"));
         }
-    }
-
-    public static void main(String[] args) throws IOException {
-        configPort = 8888;
-        startConfigServer();
-        SpringApplication.run(ConfigServiceApplication.class, args);
     }
 
 }
