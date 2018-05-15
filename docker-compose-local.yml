@@ -6,7 +6,7 @@ services:
     build: ./
     container_name: configurationservice
     ports:
-      - '8888:8888'
+      - '8888:8080'
       
   discoveryservice:
     image: aista/discovery-service

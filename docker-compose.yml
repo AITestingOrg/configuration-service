@@ -1,0 +1,17 @@
+version: '3.0'
+
+services:
+            
+  configurationservice:
+    image: aista/configuration-service
+    container_name: configurationservice
+    ports:
+      - '8888:8080'
+      
+  discoveryservice:
+    image: aista/discovery-service
+    container_name: discoveryservice
+    ports:
+      - '8761:8761'
+    environment:
+      - 'eviction-interval-timer-in-ms: 1000'
