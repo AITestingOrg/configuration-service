@@ -1,4 +1,16 @@
 language: java
 jdk:
-  - oraclejdk8
+- oraclejdk8
 sudo: required
+after_success:
+- "./gradlew assemble"
+- docker -v
+- docker login -u=$DOCKER_USERNAME -p=$DOCKER_PASSWORD
+- set +e
+- export REPO=aista/configuration-service
+- docker build -t $REPO:$TRAVIS_TAG -t $REPO:latest .
+- docker push $REPO
+env:
+  global:
+  - secure: nyouxx4p+tRvTYmt6V4Uj57ytuHOE/cM7Wlj/Y0lMk/GFGKG7KJAkwkxhWQXgbkwvWRbNcAha1X5Y4szmghWSvJTI5ALo908act8Z/DVZorY9yKJ1oi6wZYI0mQgoluU+2mB0RuJPsDgY2I7jDYKNc0tfrAOFdb1HKnt4MQgdUJRC01N5mP9AEDiiDQGScdF2jx8xP59HB275i8/XOGgLjzzq7Jdv9fF4XWtuoL/adAFcrMBt/p928gMe7AqOaeEKw9k1JpepxZjtljHH1mH1PGNZjU6AHukDsM/ySVfo0fhv/wd49+ORUTeVfqZz5FLNaJfLJPc7Gm04DQ+OAztEj6RlNnDpAoRQVdfL/39I1fYZjqPSoe+4BYZ46BwZxVhlLm1novKJ/5rSecIijSdYtRlofr3/HSSgaDTwssPHINmQuweUdQvbCv55FlqfYiOxK/kqf/EJnc/sV1+i+KiuROdgsG5LERu4iXqsLS0RZ+BSDWqx6K8U5VdLv36hYXgCouVNRXkPWEeCGFu/XHbre0bXhiEBvIg1BUtUYs5xgwjRFONbJykWz29c+rLx66utDe/ALhS/zjzHY+YI8xHNm8LR2QQ4FqiD9Y02cg5PmL+WQEfMaXYZSdLnQCdQJtttE11qwqy7yhVtzJKCdgnfV2a1AgCebsPoqkKOW8slAM=
+  - secure: LQXHCVjSDhWgH1uoJAAu1zPsdMdZjJGZV/NwoLVhchYqg82r2pZ8ERYhzUvHnKSlMzw8D/B+NIuxLMaPDVf/vsr5+/2DiQ0LR3q/jNc7zJuXPwl1jTcm5deJsCpj94W6g/vQ8GCg6YzWKe1OoVQM7BXyWVvfXpkPfe+BxOfPLQfJQ+8IL51zWI1TT/J0tKAZawTPhAg+D1oHLGimc7n8QKGL8aqI0jkIKMecD5Bi+i1QV+k5ZAicwVn0s7pgUICJtUnf9k6+pAsdd6j53XQVmsk1tOKekbW9VhVk6Bi8pqlQgH4lRg3GSjnIxeQ4d63tEEbhVqmhOetj8upK1qMkx+C6m1WZ2b+rtmcR5vfOmvIqDoqjGU7MVIWtSjF5NfH4LGWoL+wP6NKMv54hoDBHnGK5lKxEQos9thernkNGlDXWCPEog4nhWdxbNQi3qr+0NWEA2HpGIn2X+IKqkctGvMB/jitRdu77uMGS02k8ZvmKyMTTHz0bqFvP9x+gBW8LDFXiGdcNGwdyx8nhZMiGlqH3R40OnaNHwIgD1lo6HC3xDMciYbaEgCUnZHJW35CAnWRXwUW+0SWR/SlylQXlRNV1ijd8Tzu6lF6AlJSgnbH2A/8mH+L0RsEp5RdKCR1PyAITV93HYt3ZO0z9PMF+hSrvhrRoSRT4dHdd5skTe0E=
