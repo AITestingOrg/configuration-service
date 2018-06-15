@@ -8,7 +8,7 @@ spring:
         encrypt.enabled: false
         git:
           uri: https://github.com/AITestingOrg/configuration-repository/
-          searchPaths: edgeservice, userservice, tripmanagementcmd, tripmanagementquery, passenger, passenger, drivermanagementcmd, drivermanagementquery, discoveryservice, billingcmd, billingquery, paymentcmd, paymentquery, gmapsadapter, calculationservice 
+          searchPaths: edgeservice, userservice, tripmanagementcmd, tripmanagementquery, passenger, passenger, drivermanagementcmd, drivermanagementquery, discoveryservice, billingcmd, billingquery, paymentcmd, paymentquery, gmapsadapter, calculationservice, accountcmd, accountquery, customercmd, customerquery
 server:
   port: 8080
   
