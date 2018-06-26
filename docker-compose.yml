@@ -9,7 +9,7 @@ services:
       - '8888:8080'
       
   discoveryservice:
-    image: aista/discovery-service
+    image: aista/eureka
     container_name: discoveryservice
     ports:
       - '8761:8761'
